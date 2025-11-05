@@ -17,6 +17,6 @@ namespace Ecommerce.Persistence.Data
         }
         public DbSet<Products> Products { get; set; }
         public DbSet<ProductBrand> ProductBrands { get; set; }
-        public DbSet<ProductType> ProductTypes { get; set; }
+        public DbSet<ProductType> ProductTypes { get; set; } 
     }
 }
