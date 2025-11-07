@@ -6,16 +6,17 @@ namespace Ecommerce.Api.Extensions
 {
     public static class WebApplicationRegister
     {
-        public static WebApplication MigrateDatabase(this WebApplication app)
+        public static async Task<WebApplication> MigrateDatabase(this WebApplication app)
         {
-            using var scope = app.Services.CreateScope();
+            await using var scope = app.Services.CreateAsyncScope();
             var dbContext = scope.ServiceProvider.GetRequiredService<StoreDbContext>();
 
             try
             {
-                if (dbContext.Database.GetPendingMigrations().Any())
+                var pendingMigrations = await dbContext.Database.GetPendingMigrationsAsync();
+                if (pendingMigrations.Any())
                 {
-                    dbContext.Database.Migrate();
+                    await dbContext.Database.MigrateAsync();
                 }
             }
             catch (Exception ex)
@@ -27,11 +28,11 @@ namespace Ecommerce.Api.Extensions
             return app;
         }
 
-        public static WebApplication SeedData(this WebApplication app)
+        public static async Task<WebApplication> SeedData(this WebApplication app)
         {
-            using var scope = app.Services.CreateScope();
+            await using var scope = app.Services.CreateAsyncScope();
             var dataInitializer = scope.ServiceProvider.GetRequiredService<IDataInitializer>();
-            dataInitializer.Initialize();
+            await dataInitializer.InitializeAsync();
             return app;
         }
     }

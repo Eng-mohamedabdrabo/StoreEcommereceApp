@@ -20,11 +20,11 @@ namespace Ecommerce.Persistence.Data.SeedData
             _dbContext = dbContext;
         }
 
-        public void Initialize()
+        public async Task InitializeAsync()
         {
-            var hasProduct = _dbContext.Products.Any();
-            var hasBrand = _dbContext.ProductBrands.Any();
-            var hasTypes = _dbContext.ProductTypes.Any();
+            var hasProduct = await _dbContext.Products.AnyAsync();
+            var hasBrand = await _dbContext.ProductBrands.AnyAsync();
+            var hasTypes = await _dbContext.ProductTypes.AnyAsync();
             if (hasProduct && hasBrand && hasTypes)
                 return;
 
@@ -32,16 +32,16 @@ namespace Ecommerce.Persistence.Data.SeedData
             {
                 if (!hasBrand)
                 {
-                    SeedDataFromJson<ProductBrand, int>("brands.json", _dbContext.ProductBrands);
+                   await SeedDataFromJson<ProductBrand, int>("brands.json", _dbContext.ProductBrands);
                 }
                 if (!hasTypes)
                 {
-                    SeedDataFromJson<ProductType, int>("types.json", _dbContext.ProductTypes);
+                   await SeedDataFromJson<ProductType, int>("types.json", _dbContext.ProductTypes);
                 }
                 _dbContext.SaveChanges();
                 if (!hasProduct)
                 {
-                    SeedDataFromJson<Products, int>("products.json", _dbContext.Products);
+                    await SeedDataFromJson<Products, int>("products.json", _dbContext.Products);
                     _dbContext.SaveChanges();
                 }
             }
@@ -52,7 +52,7 @@ namespace Ecommerce.Persistence.Data.SeedData
             }
         }
 
-        private void SeedDataFromJson<T, TKey>(string fileName, DbSet<T> dbSet) where T : BaseEntity<TKey>
+        private async Task SeedDataFromJson<T, TKey>(string fileName, DbSet<T> dbSet) where T : BaseEntity<TKey>
         {
             var filePath = @"..\Ecommerce.Persistence\Data\SeedData\SeedingFiles\" + fileName;
             if (!File.Exists(filePath)) 
@@ -61,7 +61,7 @@ namespace Ecommerce.Persistence.Data.SeedData
             try
             {
                 var dataStream = File.OpenRead(filePath);
-                var data = JsonSerializer.Deserialize<List<T>>(dataStream, new JsonSerializerOptions
+                var data = await JsonSerializer.DeserializeAsync<List<T>>(dataStream, new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
                 });

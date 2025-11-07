@@ -10,7 +10,7 @@ namespace Ecommerce.Domain.Contracts
 {
     public interface IDataInitializer
     {
-        public void Initialize();
+        public Task InitializeAsync();
 
        
     }

@@ -10,7 +10,7 @@ namespace Ecommerce.Api
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async void Main(string[] args)
         {
             #region DI
             var builder = WebApplication.CreateBuilder(args);
@@ -35,8 +35,8 @@ namespace Ecommerce.Api
             var app = builder.Build();
 
             #region Seeding Data
-            app.MigrateDatabase();
-            app.SeedData(); 
+            await app.MigrateDatabase();
+            await app.SeedData(); 
             #endregion
 
             #region Configuring PipeLine(MiddleWares)
