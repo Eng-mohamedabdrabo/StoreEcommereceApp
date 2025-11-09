@@ -1,8 +1,13 @@
 
 using Ecommerce.Api.Extensions;
 using Ecommerce.Domain.Contracts;
+using Ecommerce.Domain.Entities.ProductModule;
 using Ecommerce.Persistence.Data;
 using Ecommerce.Persistence.Data.SeedData;
+using Ecommerce.Persistence.Repositories;
+using Ecommerce.Service.Abstraction;
+using Ecommerce.Services;
+using Ecommerce.Services.MappingProfiles;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
@@ -10,7 +15,7 @@ namespace Ecommerce.Api
 {
     public class Program
     {
-        public static async void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             #region DI
             var builder = WebApplication.CreateBuilder(args);
@@ -29,8 +34,12 @@ namespace Ecommerce.Api
             );
 
             builder.Services.AddScoped<IDataInitializer, DataInitializer>();
-
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            builder.Services.AddScoped <IProductService, ProductsService>();
+            //Inject Mapping profile
+            builder.Services.AddAutoMapper(x => x.AddProfile<ProductProfile>());
             #endregion
+
             // Configure the HTTP request pipeline.
             var app = builder.Build();
 
