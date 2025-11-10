@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace Ecommerce.Presentation.Controllers
 {
     [ApiController]
-    [Route("api({controller})")]
+    [Route("api/[controller]")]
     public class ProductController : ControllerBase
     {
         private readonly IProductService _productService;
