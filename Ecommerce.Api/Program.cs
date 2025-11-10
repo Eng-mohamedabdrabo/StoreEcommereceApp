@@ -19,7 +19,8 @@ namespace Ecommerce.Api
         {
             #region DI
             var builder = WebApplication.CreateBuilder(args);
-
+            builder.Services.AddEndpointsApiExplorer(); 
+            builder.Services.AddOpenApi();              
             // Add services to the container.
 
             builder.Services.AddControllers();
@@ -37,7 +38,7 @@ namespace Ecommerce.Api
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped <IProductService, ProductsService>();
             //Inject Mapping profile
-            builder.Services.AddAutoMapper(x => x.AddProfile<ProductProfile>());
+            builder.Services.AddAutoMapper(typeof(MappingServiceReference).Assembly);
             #endregion
 
             // Configure the HTTP request pipeline.
@@ -52,12 +53,13 @@ namespace Ecommerce.Api
             if (app.Environment.IsDevelopment())
             {
                 app.MapOpenApi();
+                app.MapGet("/", () => "Ecommerce API is running...");
             }
 
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
-
+            app.UseStaticFiles();
 
             app.MapControllers();
 
