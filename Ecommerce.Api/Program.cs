@@ -53,7 +53,7 @@ namespace Ecommerce.Api
             if (app.Environment.IsDevelopment())
             {
                 app.MapOpenApi();
-                app.MapGet("/", () => "Ecommerce API is running...");
+                
             }
 
             app.UseHttpsRedirection();
