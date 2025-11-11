@@ -11,20 +11,29 @@ namespace Ecommerce.Persistence
 
         public static IQueryable<TEntity> CreateQuery<TEntity, TKey>(
             IQueryable<TEntity> entryPoint,
-            ISpecifications<TEntity, TKey> specifications)
+            ISpecifications<TEntity, TKey>? specifications)
             where TEntity : BaseEntity<TKey>
         {
-            var Query = entryPoint;
+            var query = entryPoint;
+
             if (specifications is not null)
             {
+                // Apply Criteria (where condition)
+                if (specifications.Criteria is not null)
+                {
+                    query = query.Where(specifications.Criteria);
+                }
+
+                // Apply Include Expressions (eager loading)
                 if (specifications.IncludeExpressions is not null && specifications.IncludeExpressions.Any())
                 {
-                    Query = specifications.IncludeExpressions
-                        .Aggregate(Query, (currentQuery, includeExp) => currentQuery
-                        .Include(includeExp));
+                    query = specifications.IncludeExpressions
+                        .Aggregate(query, (currentQuery, includeExp) => currentQuery.Include(includeExp));
                 }
             }
-            return Query;
+
+            // لازم نرجع الـ query في كل الحالات
+            return query;
         }
     }
 }

@@ -8,10 +8,16 @@ using System.Threading.Tasks;
 
 namespace Ecommerce.Services.Specifications
 {
-    public class ProductWithTypeAndBrandSpec<TEntity,TKey> : BaseSpecifications<Products,int>
-        where TEntity : BaseEntity<int>
+    public class ProductWithTypeAndBrandSpec : BaseSpecifications<Products,int>
+        
     {
-        public ProductWithTypeAndBrandSpec() :base()
+        public ProductWithTypeAndBrandSpec() :base(null)
+        {
+            AddInclude(P => P.ProductBrand);
+            AddInclude(P => P.ProductType);
+        }
+
+        public ProductWithTypeAndBrandSpec(int id) : base(X=>X.Id==id)
         {
             AddInclude(P => P.ProductBrand);
             AddInclude(P => P.ProductType);
