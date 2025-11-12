@@ -19,9 +19,9 @@ namespace Ecommerce.Presentation.Controllers
             _productService = productService;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAllProducts() 
+        public async Task<IActionResult> GetAllProducts(int?brandId , int?typeId) 
         {
-            var products = await _productService.GetAllProductsAsync();
+            var products = await _productService.GetAllProductsAsync(brandId, typeId);
             return Ok(products);
         }
         [HttpGet("{id}")]
