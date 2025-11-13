@@ -1,4 +1,5 @@
 ﻿using Ecommerce.Service.Abstraction;
+using Ecommerce.Shared;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -19,9 +20,9 @@ namespace Ecommerce.Presentation.Controllers
             _productService = productService;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAllProducts() 
+        public async Task<IActionResult> GetAllProducts([FromQuery]ProductQueryParams queryParams) 
         {
-            var products = await _productService.GetAllProductsAsync();
+            var products = await _productService.GetAllProductsAsync(queryParams);
             return Ok(products);
         }
         [HttpGet("{id}")]
