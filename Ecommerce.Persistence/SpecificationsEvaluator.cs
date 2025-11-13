@@ -30,9 +30,22 @@ namespace Ecommerce.Persistence
                     query = specifications.IncludeExpressions
                         .Aggregate(query, (currentQuery, includeExp) => currentQuery.Include(includeExp));
                 }
+                // Apply Sorting Expressions (Ascending)
+
+                if (specifications.OrderBy is not null)
+                {
+                    query = query.OrderBy(specifications.OrderBy);
+                }
+
+                // Apply Sorting Expressions (Descinding)
+
+                if (specifications.OrderByDesc is not null)
+                {
+                    query = query.OrderByDescending(specifications.OrderByDesc);
+                }
+
             }
 
-            // لازم نرجع الـ query في كل الحالات
             return query;
         }
     }

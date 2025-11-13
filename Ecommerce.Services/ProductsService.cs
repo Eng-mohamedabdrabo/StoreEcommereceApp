@@ -5,10 +5,7 @@ using Ecommerce.Service.Abstraction;
 using Ecommerce.Services.Specifications;
 using Ecommerce.Shared;
 using Ecommerce.Shared.ProductDTOs;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Ecommerce.Services
@@ -17,11 +14,14 @@ namespace Ecommerce.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        public ProductsService(IUnitOfWork unitOfWork , IMapper mapper)
+
+        public ProductsService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
+
+        // ✅ Get all products with filtering, sorting, and includes
         public async Task<IEnumerable<ProductDTO>> GetAllProductsAsync(ProductQueryParams queryParams)
         {
             var spec = new ProductWithTypeAndBrandSpec(queryParams);
@@ -29,19 +29,22 @@ namespace Ecommerce.Services
             return _mapper.Map<IEnumerable<ProductDTO>>(products);
         }
 
+        // ✅ Get product by id (with includes)
+        public async Task<ProductDTO> GetProductByIdAsync(int id)
+        {
+            var spec = new ProductWithTypeAndBrandSpec(id);
+            var product = await _unitOfWork.GetRepository<Products, int>().GetByIdAsync(spec);
+            return _mapper.Map<ProductDTO>(product);
+        }
+
+        // ✅ Get all brands
         public async Task<IEnumerable<BrandsDTO>> GetBrandsAsync()
         {
             var brands = await _unitOfWork.GetRepository<ProductBrand, int>().GetAllAsync();
             return _mapper.Map<IEnumerable<BrandsDTO>>(brands);
         }
 
-        public async Task<ProductDTO> GetProductByIdAsync(int id)
-        {
-            var spec =new ProductWithTypeAndBrandSpec(id);
-            var product = await _unitOfWork.GetRepository<Products, int>().GetByIdAsync(spec);
-            return _mapper.Map<ProductDTO>(product);
-        }
-
+        // ✅ Get all types
         public async Task<IEnumerable<TypesDTO>> GetTypesAsync()
         {
             var types = await _unitOfWork.GetRepository<ProductType, int>().GetAllAsync();
