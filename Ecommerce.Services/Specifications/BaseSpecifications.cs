@@ -19,6 +19,12 @@ namespace Ecommerce.Services.Specifications
 
         public Expression<Func<TEntity, object>> OrderByDesc { get; private set; }
 
+        public int Take { private set; get; }
+
+        public int Skip { private set; get; }
+
+        public bool IsPaginated { private set; get; }
+
         protected BaseSpecifications(Expression<Func<TEntity, bool>> criteriaExp)
         {
             Criteria = criteriaExp;
@@ -39,5 +45,11 @@ namespace Ecommerce.Services.Specifications
             OrderByDesc = orderByDescExp;
         }
 
-    }
+        protected void ApplyPagination(int pageSize , int pageIndex)
+        {
+            IsPaginated = true;
+            Take = pageSize;
+            Skip = (pageIndex - 1) * pageSize;
+        }
+        }
 }

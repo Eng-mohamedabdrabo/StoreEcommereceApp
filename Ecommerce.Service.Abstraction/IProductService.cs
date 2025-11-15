@@ -10,7 +10,7 @@ namespace Ecommerce.Service.Abstraction
         /// <summary>
         /// Get all products with filtering, searching, and sorting options.
         /// </summary>
-        Task<IEnumerable<ProductDTO>> GetAllProductsAsync(ProductQueryParams queryParams);
+        Task<PaginatedResult<ProductDTO>> GetAllProductsAsync(ProductQueryParams queryParams);
 
         /// <summary>
         /// Get a single product with its brand and type details.

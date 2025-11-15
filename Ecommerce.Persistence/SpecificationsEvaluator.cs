@@ -44,6 +44,11 @@ namespace Ecommerce.Persistence
                     query = query.OrderByDescending(specifications.OrderByDesc);
                 }
 
+                if (specifications.IsPaginated == true)
+                {
+                    query = query.Skip(specifications.Skip).Take(specifications.Take);
+                }
+
             }
 
             return query;
