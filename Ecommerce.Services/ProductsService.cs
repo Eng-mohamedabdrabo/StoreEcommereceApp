@@ -5,10 +5,7 @@ using Ecommerce.Service.Abstraction;
 using Ecommerce.Services.Specifications;
 using Ecommerce.Shared;
 using Ecommerce.Shared.ProductDTOs;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Ecommerce.Services
@@ -17,34 +14,68 @@ namespace Ecommerce.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        public ProductsService(IUnitOfWork unitOfWork , IMapper mapper)
+
+        public ProductsService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
-        public async Task<IEnumerable<ProductDTO>> GetAllProductsAsync(ProductQueryParams queryParams)
+
+        // ✅ Get all products (filtering + sorting + pagination)
+        public async Task<PaginatedResult<ProductDTO>> GetAllProductsAsync(ProductQueryParams queryParams)
         {
             var spec = new ProductWithTypeAndBrandSpec(queryParams);
-            var products = await _unitOfWork.GetRepository<Products, int>().GetAllAsync(spec);
-            return _mapper.Map<IEnumerable<ProductDTO>>(products);
+
+            // Get paginated data
+            var products = await _unitOfWork
+                .GetRepository<Products, int>()
+                .GetAllAsync(spec);
+
+            // Map to DTO
+            var mappedData = _mapper.Map<IEnumerable<ProductDTO>>(products);
+
+            // Get total count for pagination
+            var totalItems = await _unitOfWork
+                .GetRepository<Products, int>()
+                .CountAsync(new ProductWithFiltersForCountSpec(queryParams));
+
+            return new PaginatedResult<ProductDTO>(
+                queryParams.PageIndex,
+                queryParams.PageSize,
+                totalItems,
+                mappedData
+            );
         }
 
-        public async Task<IEnumerable<BrandsDTO>> GetBrandsAsync()
-        {
-            var brands = await _unitOfWork.GetRepository<ProductBrand, int>().GetAllAsync();
-            return _mapper.Map<IEnumerable<BrandsDTO>>(brands);
-        }
-
+        // ✅ Get product by id (with includes)
         public async Task<ProductDTO> GetProductByIdAsync(int id)
         {
-            var spec =new ProductWithTypeAndBrandSpec(id);
-            var product = await _unitOfWork.GetRepository<Products, int>().GetByIdAsync(spec);
+            var spec = new ProductWithTypeAndBrandSpec(id);
+
+            var product = await _unitOfWork
+                .GetRepository<Products, int>()
+                .GetByIdAsync(spec);
+
             return _mapper.Map<ProductDTO>(product);
         }
 
+        // ✅ Get all brands
+        public async Task<IEnumerable<BrandsDTO>> GetBrandsAsync()
+        {
+            var brands = await _unitOfWork
+                .GetRepository<ProductBrand, int>()
+                .GetAllAsync();
+
+            return _mapper.Map<IEnumerable<BrandsDTO>>(brands);
+        }
+
+        // ✅ Get all types
         public async Task<IEnumerable<TypesDTO>> GetTypesAsync()
         {
-            var types = await _unitOfWork.GetRepository<ProductType, int>().GetAllAsync();
+            var types = await _unitOfWork
+                .GetRepository<ProductType, int>()
+                .GetAllAsync();
+
             return _mapper.Map<IEnumerable<TypesDTO>>(types);
         }
     }
