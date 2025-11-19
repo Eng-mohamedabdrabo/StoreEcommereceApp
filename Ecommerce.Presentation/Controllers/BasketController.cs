@@ -1,4 +1,5 @@
-﻿using Ecommerce.Service.Abstraction;
+﻿using Ecommerce.Presentation.Attributes;
+using Ecommerce.Service.Abstraction;
 using Ecommerce.Shared.BasketDTOs;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -19,6 +20,7 @@ namespace Ecommerce.Presentation.Controllers
         {
             _basketService = basketService;
         }
+        [RedisCache]
         [HttpGet]
         public async Task<ActionResult<CustomerBasketDTO>> GetBasket(string basketId)
         {

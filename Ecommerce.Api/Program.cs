@@ -38,6 +38,8 @@ namespace Ecommerce.Api
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IProductService, ProductsService>();
             builder.Services.AddScoped<IBasketRepository, BasketRepository>();
+            builder.Services.AddScoped<ICacheRepository, CacheRepository>();
+            builder.Services.AddScoped<ICacheService, CacheService>();
 
             builder.Services.AddAutoMapper(typeof(MappingServiceReference).Assembly);
 
