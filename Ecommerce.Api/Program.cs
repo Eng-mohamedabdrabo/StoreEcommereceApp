@@ -1,4 +1,5 @@
-﻿using Ecommerce.Api.Extensions;
+﻿using Ecommerce.Api.CustomMiddlewares;
+using Ecommerce.Api.Extensions;
 using Ecommerce.Domain.Contracts;
 using Ecommerce.Persistence.Data;
 using Ecommerce.Persistence.Data.SeedData;
@@ -40,6 +41,7 @@ namespace Ecommerce.Api
             builder.Services.AddScoped<IBasketRepository, BasketRepository>();
             builder.Services.AddScoped<ICacheRepository, CacheRepository>();
             builder.Services.AddScoped<ICacheService, CacheService>();
+            builder.Services.AddScoped<IBasketService, BasketService>();
 
             builder.Services.AddAutoMapper(typeof(MappingServiceReference).Assembly);
 
@@ -53,7 +55,7 @@ namespace Ecommerce.Api
 
             await app.MigrateDatabase();
             await app.SeedData();
-
+            app.UseMiddleware<ExceptionHandlerMiddleware>();
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();

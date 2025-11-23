@@ -1,8 +1,9 @@
-﻿using Ecommerce.Service.Abstraction;
-using Ecommerce.Domain.Contracts;
+﻿using Ecommerce.Domain.Contracts;
+using Ecommerce.Service.Abstraction;
+using Microsoft.Extensions.Options;
 using System;
-using System.Threading.Tasks;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace Ecommerce.Services
 {
@@ -22,7 +23,10 @@ namespace Ecommerce.Services
 
         public async Task SetAsync(string key, object cacheValue, TimeSpan timeToLive)
         {
-            var value = JsonSerializer.Serialize(cacheValue);
+            var value = JsonSerializer.Serialize(cacheValue,  new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            });
             await _cacheRepository.SetAsync(key, value, timeToLive);
         }
     }
